@@ -1,0 +1,33 @@
+name: soul ci
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+jobs:
+  ci:
+    name: Test and Build
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/@checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Get Node version
+        id: node-version
+        run: echo "version=$(node -v)" >> $GITHUB_OUTPUT
+
+      - name: Install Dependencies
+        run: |
+          npm install --frozen-lockfile --prefer-offline
+      - name: Cache CI files
+        id: ci-cache
+        uses: actions/cache@v3
+        with:
+          path: .cicache
+          key: ${{ runner.os }}-ci-${{ steps.node-version.outputs.version }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-ci-
