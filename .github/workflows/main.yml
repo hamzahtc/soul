@@ -21,3 +21,8 @@ jobs:
         run: |
           cd soul-ui 
           npm install --frozen-lockfile --prefer-offline
+
+      - name: Test
+        run: |
+          cd soul-ui
+          npm run lint
